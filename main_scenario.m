@@ -40,17 +40,12 @@ if actN==30
     fpath=['D:\研究生资料\RLP-PS汇总\实验数据集\PSPLIB\j',actNumber,'\J'];
     filename=[fpath,actNumber,'_',actno,'.RCP'];
 elseif actN==5||actN ==10
-    filename =['C:\Users\ASUS\Desktop\SRLP_PS数据\J',actNumber,'\项目网络数据','\J',actNumber,'_',actno,'.txt'];
+    filename =['D:\研究生资料\SRLP-PS-汇总-20211220\数据\SRLP_PS数据\J',actNumber,'\项目网络数据','\J',actNumber,'_',actno,'.txt'];
 end
 % 获取项目网络结构
 [projRelation,actNo,resNo,resNumber,duration,nrsu,nrpr,pred,su,req] = initData(filename);
 %% 随机工期
-% if actN==5||actN ==10
-%     fp_duration = ['C:\Users\ASUS\Desktop\SRLP-PS随机工期\J',actNumber,'\J',actNumber,'_',actno,'_duration.txt'];
-% elseif actN == 30
-%     fp_duration=['D:\研究生资料\SRLP-PS汇总\数据和代码_final\随机工期\',num2str(disT),'\J',actNumber,'\',actno,'.txt'];
-% end
-fp_duration = ['C:\Users\ASUS\Desktop\SRLP-PS随机工期\J',actNumber,'\J',actNumber,'_',actno,'_duration.txt'];
+fp_duration = ['D:\研究生资料\SRLP-PS-汇总-20211220\数据\SRLP-PS随机工期\J',actNumber,'\J',actNumber,'_',actno,'_duration.txt'];
 stochatic_d = initfile(fp_duration);
 
 % 获得柔性结构数据
@@ -72,9 +67,9 @@ choiceList=unique(choiceList);
 choiceList=sort(choiceList);
 
 % 写入文件路径
-fpathRoot=['C:\Users\ASUS\Desktop\测试实验20211014\GA\J',actNumber,'\'];
-setName = ['srlp_',num2str(actNo)];
-dt=num2str(dtime);
+% fpathRoot=['C:\Users\ASUS\Desktop\测试实验20211014\GA\J',actNumber,'\'];
+% setName = ['srlp_',num2str(actNo)];
+% dt=num2str(dtime);
 %% 所有活动都执行的项目截止日期[cpm] 平均工期
 [all_est, all_eft]= forward(projRelation, duration);
 lftn=all_eft(actNo);
@@ -205,7 +200,7 @@ end
 %% 迭代，求最好的染色体
 
 %终止条件
-end_schedules=1000;
+end_schedules=2000;
 nr_schedules=popsize;
 count = 0;
 % 评估父个体
