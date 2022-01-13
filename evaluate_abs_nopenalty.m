@@ -12,8 +12,6 @@ for i=1:rep
     d=duration_data(i,:);
 %  解码生成进度计划
     [schedule,u_kt]=stochastic_SSGS_1(AL,implement,req,resNumber,d,nrpr,pred,deadline,resNo);
-%     disp(schedule(actNo))
-%     disp(deadline)
     u_kt1=u_kt(:,1:schedule(actNo));
     % 判断进度计划是否可行、资源可行
     if scheduleFeasible(schedule,actNo,nrsu,su,implement,d)==1 && resourceFeasible(u_kt1,resNumber)==1 
@@ -22,8 +20,7 @@ for i=1:rep
             p=p+1;
         end
         for k=1:resNo
-            for t=2:schedule(actNo)+1
-               
+            for t=2:schedule(actNo)  
                 if u_kt(k,t)-u_kt(k,t-1)<0
                     temp = u_kt(k,t-1)-u_kt(k,t);
                 else
