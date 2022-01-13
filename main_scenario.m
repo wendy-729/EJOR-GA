@@ -30,9 +30,9 @@ disT=char(disT);
 % 测试哪一组数据
 for gd=[1]
 groupdata= num2str(gd);
-for dtime=[1.5] 
+for dtime=[1.5,1.8] 
 % 遍历每一个实例
-for act=6:6
+for act=6:10:100
 rng(rn_seed,'twister');% 设置随机数种子
 actno=num2str(act);
 %% 初始化数据
@@ -52,7 +52,7 @@ stochatic_d = initfile(fp_duration);
 if actN==30
     fp_choice=['D:\研究生资料\SRLP-PS汇总\数据和代码_final\SRLP-PS实验数据\J',actNumber,'\'];
 elseif actN==5||actN ==10
-    fp_choice = ['C:\Users\ASUS\Desktop\SRLP_PS数据\J',actNumber,'\',];
+    fp_choice = ['D:\研究生资料\SRLP-PS-汇总-20211220\数据\SRLP_PS数据\J',actNumber,'\',];
 end
 
 choicename=[fp_choice,groupdata,'\choice\J',actNumber,'_',actno,'.txt'];
@@ -67,16 +67,13 @@ choiceList=unique(choiceList);
 choiceList=sort(choiceList);
 
 % 写入文件路径
-% fpathRoot=['C:\Users\ASUS\Desktop\测试实验20211014\GA\J',actNumber,'\'];
-% setName = ['srlp_',num2str(actNo)];
-% dt=num2str(dtime);
+fpathRoot=['C:\Users\ASUS\Desktop\srlp-ps测试实验\GA\J',actNumber,'\'];
+setName = ['srlp_',num2str(actNo)];
+dt=num2str(dtime);
 %% 所有活动都执行的项目截止日期[cpm] 平均工期
 [all_est, all_eft]= forward(projRelation, duration);
 lftn=all_eft(actNo);
 deadline=floor(dtime*all_eft(actNo));
-% disp(deadline)
-% disp(sum(duration))
-% disp(sum(duration)-deadline)
 % 最好的解
 best_AL=zeros(1,actNo);
 best_implement=zeros(1,actNo+2);
@@ -180,6 +177,8 @@ for i=1:popsize
         al=AL_set(i,:);
         [projRelation_i,nrpr_i,nrsu_i,su_i,pred_i]=updateRelation(projRelation,nrpr,nrsu,su,pred,choiceList,implement,actNo);  
         % 对活动列表进行仿真rep次
+%         [expected_obj,time_pro]=evaluate_abs_nopenalty(al,rep,implement,req,resNumber,nrpr_i,pred_i,nrsu_i,su_i,deadline,resNo,actNo,stochatic_d);
+        % 没有惩罚
         [expected_obj,time_pro]=evaluate_abs(al,rep,implement,req,resNumber,nrpr_i,pred_i,nrsu_i,su_i,deadline,resNo,actNo,stochatic_d);
         implementList(i,actNo+1)=expected_obj;
         implementList(i,actNo+2)=time_pro;
@@ -198,9 +197,8 @@ for i=1:popsize
     end
 end
 %% 迭代，求最好的染色体
-
 %终止条件
-end_schedules=2000;
+end_schedules=1000;
 nr_schedules=popsize;
 count = 0;
 % 评估父个体
@@ -292,7 +290,7 @@ while nr_schedules<end_schedules
         child_AL(i,:)=new_AL;
     end
     parent_AL(popsize+1:end,:)=child_AL;
-%% 评估子代
+   %% 评估子代
     for i=popsize+1:2*popsize 
         % 【这一步很重要，要去掉及时完成率为1的，会影响更新项目结构】
         implement=parent_implementList(i,1:actNo); % 当前染色体
@@ -321,7 +319,7 @@ while nr_schedules<end_schedules
         end
     end
      % 判断是否达到了10000
-%     if nr_schedules==1000 && count==0
+%     if nr_schedules==2000 && count==0
 %          count = count+1;
 %          cputime1=toc;
 %         outResults1=[act,best_implement(actNo+1),best_implement(actNo+2),cputime1,best_AL,best_implement,nr_schedules];
@@ -342,19 +340,19 @@ if best_implement(actNo+1)~=Inf
     best_implement(actNo+1) = expected_obj;
     best_implement(actNo+2) = time_pro;
 end
-disp(cputime)
-disp(best_implement(actNo+1))
-disp(best_implement(actNo+2))
+% disp(cputime)
+% disp(best_implement(actNo+1))
+% disp(best_implement(actNo+2))
 % profile  viewer
 %% 写入文件（目标函数均值，及时完工的概率,AL...）
-% outResults=[act,best_implement(actNo+1),best_implement(actNo+2),cputime,best_AL,best_implement,end_schedules];
-% outFile=[fpathRoot,num2str(end_schedules),'sch_ga_',setName,'_',num2str(disT),'_1',dt,'_',num2str(rep),'.txt'];
-% 
-% dlmwrite(outFile,outResults,'-append', 'newline', 'pc',  'delimiter', '\t');
-% % dlmwrite(outFile1,outResults1,'-append', 'newline', 'pc',  'delimiter', '\t');
-% outResults=[];
-% % outResults1=[];
-% disp(['Instance ',num2str(act),' has been solved.']);
+outResults=[act,best_implement(actNo+1),best_implement(actNo+2),cputime,best_AL,best_implement,end_schedules];
+outFile=[fpathRoot,num2str(end_schedules),'sch_ga_penalty_1_',setName,'_',dt,'_',num2str(rep),'.txt'];
+
+dlmwrite(outFile,outResults,'-append', 'newline', 'pc',  'delimiter', '\t');
+% dlmwrite(outFile1,outResults1,'-append', 'newline', 'pc',  'delimiter', '\t');
+outResults=[];
+% outResults1=[];
+disp(['Instance ',num2str(act),' has been solved.']);
 end % 实例
 end % 截止日期
 end % 组数
