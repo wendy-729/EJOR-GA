@@ -20,7 +20,7 @@ distribution{1,1}='U1';
 % 服务水平
 Pr=0.9;
 % 活动数量
-for actN=[30]
+for actN=[5,10]
 actNumber=num2str(actN);
 all_results=[];
 
@@ -32,7 +32,8 @@ for gd=[1]
 groupdata= num2str(gd);
 for dtime=[1.5,1.8] 
 % 遍历每一个实例
-for act=6:10:100
+for act = 1:20
+% for act=6:30:480
 rng(rn_seed,'twister');% 设置随机数种子
 actno=num2str(act);
 %% 初始化数据
@@ -67,7 +68,7 @@ choiceList=unique(choiceList);
 choiceList=sort(choiceList);
 
 % 写入文件路径
-fpathRoot=['C:\Users\ASUS\Desktop\srlp-ps测试实验\GA\J',actNumber,'\'];
+fpathRoot=['C:\Users\ASUS\Desktop\测试实验-srlp-ps\GA-time\J',actNumber,'\'];
 setName = ['srlp_',num2str(actNo)];
 dt=num2str(dtime);
 %% 所有活动都执行的项目截止日期[cpm] 平均工期
@@ -88,7 +89,8 @@ best_su=su;
 % 惩罚成本【都为1】
 cost=ones(1,resNo);
 %% 随机生成执行列表
-tic;
+% tic;
+tstart = tic;
 % 所有实施活动置为1
 implementList=zeros(popsize,actNo+2);
 implementList(:,actNo+1)=Inf;
@@ -196,13 +198,16 @@ for i=1:popsize
         implementList(i,actNo+1)=Inf;
     end
 end
+tused = toc(tstart);
 %% 迭代，求最好的染色体
 %终止条件
+end_time = 15;
 end_schedules=1000;
 nr_schedules=popsize;
 count = 0;
 % 评估父个体
-while nr_schedules<end_schedules
+while tused<end_time
+% while nr_schedules<end_schedules
     parent_AL(1:popsize,:)=AL_set;
     parent_implementList(1:popsize,:)=implementList;
     %% 对所有的执行列表进行交叉和变异
@@ -331,22 +336,27 @@ while nr_schedules<end_schedules
     fitIndex=fitIndex(1:popsize);
     implementList=p(fitIndex,:);
     AL_set=parent_AL(fitIndex,:);
-    nr_schedules = nr_schedules+popsize;
+    tused = toc(tstart);
+%     nr_schedules = nr_schedules+popsize;
 end % 截止条件
-cputime = toc;
+
 %% 计算真正的目标函数
 if best_implement(actNo+1)~=Inf
     [expected_obj,time_pro]=evaluate_abs_nopenalty(best_AL,rep,best_implement,req,resNumber,best_nrpr,best_pred,best_nrsu,best_su,deadline,resNo,actNo,stochatic_d);
     best_implement(actNo+1) = expected_obj;
     best_implement(actNo+2) = time_pro;
 end
+cputime = tused;
+% cputime = toc;
 % disp(cputime)
 % disp(best_implement(actNo+1))
 % disp(best_implement(actNo+2))
 % profile  viewer
 %% 写入文件（目标函数均值，及时完工的概率,AL...）
 outResults=[act,best_implement(actNo+1),best_implement(actNo+2),cputime,best_AL,best_implement,end_schedules];
-outFile=[fpathRoot,num2str(end_schedules),'sch_ga_penalty_1_',setName,'_',dt,'_',num2str(rep),'.txt'];
+% outFile=[fpathRoot,num2str(end_schedules),'sch_ga_penalty_1_',setName,'_',dt,'_',num2str(rep),'.txt'];
+%时间
+outFile=[fpathRoot,num2str(end_time),'s_sch_ga_penalty_1_',setName,'_',dt,'_',num2str(rep),'.txt'];
 
 dlmwrite(outFile,outResults,'-append', 'newline', 'pc',  'delimiter', '\t');
 % dlmwrite(outFile1,outResults1,'-append', 'newline', 'pc',  'delimiter', '\t');

@@ -4,7 +4,7 @@ actNo=length(duration);
 schedule=zeros(1,actNo);
 % 有的进度进化可能超过了截止日期，所以就扩大了deadline
 u_kt=zeros(resNo,ceil(20*deadline));
-current=0;
+% current=0;
 for i=2:length(al)
     act=al(i);
     if implement(act)==1
@@ -20,7 +20,8 @@ for i=2:length(al)
                end
            end
        end
-       ss = max(max_end,current);
+       ss = max_end;
+%        ss = max(max_end,current);
        % 判断资源够不够用
        conflict=1;
        while conflict==1
@@ -38,7 +39,7 @@ for i=2:length(al)
                ss=ss+1;
            end
        end
-       current = ss;
+%        current = ss;
        schedule(act)=ss;
 %        current=ss;
        % 更新资源的使用量

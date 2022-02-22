@@ -29,7 +29,7 @@ for i=1:rep
         % 计算目标函数值
         if flag ==0
             for k=1:resNo
-                for t=2:schedule(actNo)
+                for t=2:schedule(actNo)+1
                     if u_kt(k,t)-u_kt(k,t-1)<0
                         temp = u_kt(k,t-1)-u_kt(k,t);
                     else
