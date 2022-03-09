@@ -14,7 +14,8 @@ for i=1:rep
     % 原来的解码，满足优先关系和资源使用可行
     [schedule, u_kt] = stochastic_SSGS_1(AL,implement,req,resNumber,d,nrpr,pred,deadline,resNo);
 %     disp(schedule)
-    u_kt=u_kt(:,1:deadline);
+    u_kt=u_kt(:,1:schedule(actNo));
+%     u_kt=u_kt(:,1:deadline);
 %     disp(u_kt)
     
     % 判断进度计划是否可行、资源可行
@@ -24,7 +25,8 @@ for i=1:rep
         
         for k=1:resNo
             temp_obj = 0;
-            for t=1:deadline-1
+            for t=1:schedule(actNo)-1
+%             for t=1:deadline-1
                 if u_kt(k,t+1)-u_kt(k,t)<0
                     temp = u_kt(k,t)-u_kt(k,t+1);
                 else
