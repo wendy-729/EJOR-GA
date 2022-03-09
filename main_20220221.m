@@ -18,9 +18,9 @@ rep=para(4);
 distribution=cell(1,1);
 distribution{1,1}='U1';
 
-C=3;
+C=300;
 % 平均工期1或者仿真0
-isflag = 1;
+isflag = 0;
 % 活动数量
 for actN=[30]
 actNumber=num2str(actN);
@@ -30,7 +30,7 @@ all_results=[];
 for disT=distribution
 disT=char(disT);
 % 测试哪一组数据
-for gd=[1,8]
+for gd=[1]
 groupdata= num2str(gd);
 for dtime=[1.2,1.4] 
 % 遍历每一个实例
@@ -40,22 +40,22 @@ rng(rn_seed,'twister');% 设置随机数种子
 actno=num2str(act);
 %% 初始化数据
 if actN==30
-    fpath=['D:\研究生资料\RLP-PS汇总\实验数据集\PSPLIB\j',actNumber,'\J'];
+    fpath=['D:\研途\研究生资料\RLP-PS汇总\实验数据集\PSPLIB\j',actNumber,'\J'];
     filename=[fpath,actNumber,'_',actno,'.RCP'];
 elseif actN==5||actN ==10
-    filename =['D:\研究生资料\SRLP-PS-汇总-20211220\数据\SRLP_PS数据\J',actNumber,'\项目网络数据','\J',actNumber,'_',actno,'.txt'];
+    filename =['D:\研途\研究生资料\SRLP-PS-汇总-20211220\数据\SRLP_PS数据\J',actNumber,'\项目网络数据','\J',actNumber,'_',actno,'.txt'];
 end
 % 获取项目网络结构
 [projRelation,actNo,resNo,resNumber,duration,nrsu,nrpr,pred,su,req] = initData(filename);
 %% 随机工期
-fp_duration = ['D:\研究生资料\SRLP-PS-汇总-20211220\数据\SRLP-PS随机工期\J',actNumber,'\J',actNumber,'_',actno,'_duration.txt'];
+fp_duration = ['D:\研途\研究生资料\SRLP-PS-汇总-20211220\数据\SRLP-PS随机工期\J',actNumber,'\J',actNumber,'_',actno,'_duration.txt'];
 stochatic_d = initfile(fp_duration);
 
 % 获得柔性结构数据
 if actN==30
-    fp_choice=['D:\研究生资料\SRLP-PS汇总\数据和代码_final\SRLP-PS实验数据\J',actNumber,'\'];
+    fp_choice=['D:\研途\研究生资料\SRLP-PS汇总\数据和代码_final\SRLP-PS实验数据\J',actNumber,'\'];
 elseif actN==5||actN ==10
-    fp_choice = ['D:\研究生资料\SRLP-PS-汇总-20211220\数据\SRLP_PS数据\J',actNumber,'\',];
+    fp_choice = ['D:\研途\研究生资料\SRLP-PS-汇总-20211220\数据\SRLP_PS数据\J',actNumber,'\',];
 end
 
 choicename=[fp_choice,groupdata,'\choice\J',actNumber,'_',actno,'.txt'];
@@ -70,7 +70,7 @@ choiceList=unique(choiceList);
 choiceList=sort(choiceList);
 
 % 写入文件路径
-fpathRoot=['C:\Users\ASUS\Desktop\新模型测试实验-srlp-ps\GA\J',actNumber,'\'];
+fpathRoot=['D:\研途\研究生资料\SRLP-PS-汇总-20211220\new_model_results\GA\J',actNumber,'\'];
 setName = ['srlp_',num2str(actNo)];
 dt=num2str(dtime);
 %% 所有活动都执行的项目截止日期[cpm] 平均工期
@@ -203,7 +203,7 @@ end
 %% 迭代，求最好的染色体
 %终止条件
 end_time = 15;
-end_schedules=3000;
+end_schedules=5000;
 nr_schedules=popsize;
 count = 0;
 % 评估父个体
@@ -360,7 +360,6 @@ cputime = toc;
 % profile  viewer
 %% 写入文件（目标函数均值，及时完工的概率,AL...）
 outResults=[act,best_implement(actNo+1),cputime,best_AL,best_implement,end_schedules];
-% outFile=[fpathRoot,num2str(end_schedules),'sch_ga_mean_',setName,'_',dt,'_',num2str(rep),'.txt'];
 %时间
 % outFile=[fpathRoot,num2str(end_time),'s_sch_ga_mean_',setName,'_',dt,'_',num2str(rep),'.txt'];
 if isflag==1
